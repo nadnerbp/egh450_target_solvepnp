@@ -79,7 +79,7 @@ class PoseEstimator:
             t.header.stamp = rospy.Time.now()
             t.header.frame_id = "camera"
 
-            # child_frame_id is the marker ID (as string)
+            # child_frame_id MUST be marker ID string for tf2_combined
             t.child_frame_id = str(marker_id)
 
             # Fill translation
@@ -89,7 +89,7 @@ class PoseEstimator:
 
             # Convert rotation vector to quaternion
             rot_mat, _ = cv2.Rodrigues(rvec[0][0])
-            qw = np.sqrt(1.0 + rot_mat[0, 0] + rot_mat[1, 1] + rot_mat[2, 2]) / 2.0
+            qw = np.sqrt(1.0 + np.trace(rot_mat)) / 2.0
             qx = (rot_mat[2, 1] - rot_mat[1, 2]) / (4.0 * qw)
             qy = (rot_mat[0, 2] - rot_mat[2, 0]) / (4.0 * qw)
             qz = (rot_mat[1, 0] - rot_mat[0, 1]) / (4.0 * qw)
